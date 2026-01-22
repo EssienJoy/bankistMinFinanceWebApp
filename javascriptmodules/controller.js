@@ -11,20 +11,12 @@ import { formatDates, formatNumbers, startLogOutTimer } from "./helpers.js";
 
 let timer;
 
-/**
- * Handles user login and UI initialization.
- *
- * Retrieves user account details, updates the UI with balance, summary, and movements,
- * and starts the logout timer.
- *
- * @param {Object} data - The login credentials.
- * @param {string} data.user - The username.
- * @param {string|number} data.password - The user's password or PIN.
- * @returns {void}
- */
 const userDetailsController = function (data) {
   // User Logs in
   const currentUser = model.correctDetails(data);
+
+  //Hide Details
+  loginView.hideDetails();
 
   // Displays Ui
   loginView.renderUi(currentUser.owner);
@@ -49,18 +41,6 @@ const userDetailsController = function (data) {
 };
 
 
-
-
-/**
- * Handles the process of transferring funds from the current account to another account.
- *
- * Updates movements, balance, and summaries in the UI. Restarts the logout timer.
- *
- * @param {Object} data - The transfer details.
- * @param {string} data.receiver - The username of the transfer recipient.
- * @param {string|number} data.amount - The amount to transfer.
- * @returns {void}
- */
 const transferController = function (data) {
 
   // User makes a Transaction
@@ -91,17 +71,6 @@ const transferController = function (data) {
 };
 
 
-
-/**
- * Handles user loan requests.
- *
- * Validates and processes the loan through the model, updates UI elements like movements,
- * balance, and summaries after a delay. Also manages logout timer.
- *
- * @param {Object} data - The loan request data.
- * @param {string|number} data.loan - The requested loan amount.
- * @returns {void}
- */
 const loanController = function (data) {
 
   // User Request Loan
@@ -132,13 +101,6 @@ const loanController = function (data) {
 
 let isSorted = false;
 
-/**
- * Toggles and applies sorting of the user's movements in ascending or descending order.
- *
- * Updates the UI with sorted movements and resets the logout timer.
- *
- * @returns {void}
- */
 const sortController = function () {
 
   // Toggle sorting direction
@@ -154,17 +116,6 @@ const sortController = function () {
 };
 
 
-/**
- * Handles the account closure process.
- *
- * Verifies credentials, deletes the account, clears input fields,
- * and hides the UI upon successful closure.
- *
- * @param {Object} data - Account closure details.
- * @param {string} data.user - Username of the account to be closed.
- * @param {string|number} data.password - Password or PIN for verification.
- * @returns {void}
- */
 const closeAccController = function (data) {
   model.closeAcc(data);
 
@@ -178,13 +129,6 @@ const closeAccController = function (data) {
 };
 
 
-/**
- * Initializes the application by setting up event handlers for user interactions.
- *
- * Binds controller functions to their respective view handlers.
- *
- * @returns {void}
- */
 const init = function () {
   loginView.addHandlerLogin(userDetailsController);
   transferView.addHandlerTransfer(transferController);

@@ -89,29 +89,10 @@ export const account5 = {
 
 export let accounts = [account1, account2, account3, account4, account5];
 
-
-/**
- * Creates a username by taking the first letter of each word in a person's name
- * @function userName
- * @param {string} username - The full name of the user
- * @returns {string} A lowercase string containing the first letter of each word in the name
- * @example
- * userName('Jonas Schmedtmann') // returns 'js'
- * userName('Sarah Smith') // returns 'ss'
- */
 const userName = function (username) {
     return username.split(' ').map(name => name[0]).join('').toLowerCase();
 };
 
-
-/**
- * Creates a new array of account objects with an added `userName` property for each.
- * The `userName` is generated from the `owner` property of each account.
- * This function does not mutate the original objects; it returns a cloned and enhanced version.
- *
- * @function addUsernameToObject
- * @returns {Array<Object>} An array of account objects, each with an added `userName` property
- */
 const addUsernameToObject = () => {
     return accounts.map(obj => ({
         ...obj,
@@ -121,13 +102,6 @@ const addUsernameToObject = () => {
 accounts = addUsernameToObject();
 
 
-/**
- * Adds a `currentBalance` property to the account object based on its movements.
- *
- * @param {Object} account - The account object containing a `movements` array.
- * @param {number[]} account.movements - An array of numerical transaction values (positive or negative).
- * @returns {Object} A new account object with an added `currentBalance` property representing the sum of all movements.
- */
 export const addBalanceToAccount = (acc) => {
     return {
         ...acc,
@@ -139,13 +113,7 @@ export const addBalanceToAccount = (acc) => {
 
 let currentAccount;
 
-/**
- * Authenticates a user based on input credentials and enriches the account with computed summaries.
- *
- * @param {Object} data - The user input data containing authentication credentials.
- * @param {string|number} data.password - The user-entered PIN used for account matching.
- * @returns {Object|null} The authenticated and enriched user account object, or null if authentication fails.
- */
+
 export const correctDetails = function (data) {
     const { username, password } = data;
 
@@ -160,55 +128,20 @@ export const correctDetails = function (data) {
 };
 
 
-
-
-/**
- * Calculates the total deposits from an array of movement amounts.
- *
- * @param {number[]} movArr - An array of transaction amounts.
- * @returns {number} The total sum of all positive (deposit) values.
- */
 export const calcSummaryIn = function (movArr) {
     return movArr.filter(mov => mov > 0).reduce((acc, mov) => acc + mov, 0);
 };
 
-
-/**
- * Calculates the total withdrawals from an array of movement amounts.
- *
- * @param {number[]} movArr - An array of transaction amounts.
- * @returns {number} The total sum of all negative (withdrawal) values.
- */
 export const calcSummaryOut = function (movArr) {
     return movArr.filter(mov => mov < 0).reduce((acc, mov) => acc + mov, 0);
 };
 
 
-
-/**
- * Calculates the interest based on the account's current balance and interest rate.
- *
- * @param {Object} acc - The account object.
- * @param {number} acc.currentBalance - The current balance of the account.
- * @param {number} acc.interestRate - The interest rate applicable to the account.
- * @returns {number} The calculated interest amount.
- */
 export const calcSummaryInterest = function (acc) {
     return acc.currentBalance * acc.interestRate;
 };
 
 
-
-
-/**
- * Adds deposit, withdrawal, and interest summaries to an account object.
- *
- * @param {Object} acc - The account object.
- * @param {number[]} acc.movements - Array of transaction amounts (positive for deposits, negative for withdrawals).
- * @param {number} acc.currentBalance - The current balance of the account.
- * @param {number} acc.interestRate - The interest rate used for calculating interest.
- * @returns {Object} A new account object enriched with `summaryIn`, `summaryOut`, and `summaryInterest` properties.
- */
 export const addSummaries = acc => ({
     ...acc,
     summaryIn: calcSummaryIn(acc.movements),
@@ -216,20 +149,6 @@ export const addSummaries = acc => ({
     summaryInterest: calcSummaryInterest(acc),
 });
 
-
-
-/**
- * Handles money transfer from the current account to a receiver's account.
- *
- * Validates the transfer conditions, updates both the sender’s and receiver’s movements,
- * recalculates balances and summaries, and updates the global `accounts` state accordingly.
- *
- * @param {Object} data - The transfer details.
- * @param {string} data.receiver - The username of the account to receive the funds.
- * @param {number|string} data.amount - The amount to be transferred.
- * @throws Will throw an error if the transfer conditions are not met (e.g., invalid receiver, self-transfer, insufficient funds, or non-positive amount).
- * @returns {Object} The updated `currentAccount` object after the transfer.
- */
 export const transferData = function (data) {
     const { receiver, amount } = data;
     if (!data) return;
@@ -277,13 +196,6 @@ export const deductSenderMovement = function (account, amount) {
 };
 
 
-/**
- * Adds a positive movement (e.g. deposit or transfer) and the current timestamp to an account.
- *
- * @param {Object} account - The receiver's account object.
- * @param {number} amount - The amount to add as a positive movement.
- * @returns {Object} A new account object with the updated movements and movementsDates arrays.
- */
 export const addReceiverMovement = function (account, amount) {
     const newDate = new Date().toISOString();
 
@@ -295,18 +207,6 @@ export const addReceiverMovement = function (account, amount) {
 };
 
 
-
-/**
- * Processes a loan request for the currently active account.
- *
- * Validates the loan amount and ensures eligibility (at least one deposit ≥ 10% of the requested loan).
- * If approved, updates the current account and the global accounts list.
- *
- * @param {Object} data - The loan request data.
- * @param {number|string} data.loan - The requested loan amount.
- * @throws Will throw an error if the loan is invalid or the eligibility condition is not met.
- * @returns {Object} The updated current account with the loan applied.
- */
 export const loanData = function (data) {
     const { loan } = data;
 
@@ -332,14 +232,6 @@ export const loanData = function (data) {
     return currentAccount;
 };
 
-
-
-/**
- * Sorts the current account's movements along with their corresponding dates.
- *
- * @param {boolean} isDescending - Determines sort order; `true` for descending, `false` for ascending.
- * @returns {Object} An object containing `movements` and `movementsDates` arrays in the sorted order.
- */
 export const sortData = function (isDescending) {
     const paired = currentAccount.movements.map((mov, i) => ({
         movement: mov,
@@ -363,19 +255,6 @@ export const sortData = function (isDescending) {
 };
 
 
-
-/**
- * Closes the currently logged-in account if credentials are valid.
- *
- * Validates the user’s password before removing the account from the global accounts list
- * and logging the user out.
- *
- * @param {Object} data - The account closure data.
- * @param {string} data.user - The username of the account to close.
- * @param {number|string} data.password - The user's PIN for verification.
- * @throws Will throw an error if the provided password is incorrect.
- * @returns {void}
- */
 export const closeAcc = function (data) {
     const { user, password } = data;
 
@@ -385,11 +264,6 @@ export const closeAcc = function (data) {
 };
 
 
-/**
- * Logs the user out if a session is currently active.
- *
- * @returns {void}
- */
 export const startLogOutTime = function () {
     if (!currentAccount) return;
 };
